@@ -2,7 +2,6 @@ from rapidfuzz import process
 from .config import SIMILARITY_THRESHOLD_MERGE
 
 def merge_catalog_and_snapshot(
-
     catalog: list[dict],
     snapshot: list[dict],
 ):
