@@ -1,0 +1,5 @@
+# Python version: 3.12
+
+# Dependencies: 
+rapidfuzz==3.0.0
+beautifulsoup4==4.12.3
