@@ -14,6 +14,7 @@ from app.normalize import (
 )
 
 from app.parser import parse_snapshot
+from app.merge import merge_catalog_and_snapshot
 
 logging.basicConfig(
     level=logging.INFO,
@@ -50,6 +51,27 @@ def main():
     )
     logging.info(
         f"Parse: Parsed {len(snapshot)} products from snapshot"
+    )
+
+    # Merge
+    merge_result = merge_catalog_and_snapshot(
+        catalog,
+        snapshot,
+    )
+
+    logging.info(
+        f"Merge: Matched products: "
+        f"{len(merge_result['catalog']) - len(merge_result['catalog_only'])}"
+    )
+
+    logging.info(
+        f"Merge: Catalog only: "
+        f"{len(merge_result['catalog_only'])}"
+    )
+
+    logging.info(
+        f"Merge: Snapshot only: "
+        f"{len(merge_result['snapshot_only'])}"
     )
 
 

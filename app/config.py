@@ -9,6 +9,8 @@ SNAPSHOT_FILE = "data/producent_novagen_snapshot.html"
 
 SIMILARITY_THRESHOLD_NORMALIZE = 95
 
+SIMILARITY_THRESHOLD_MERGE = 95
+
 CATEGORY_MAP = {
     # Laboratory plasticware
     "plastiki lab.": "laboratory plasticware",
