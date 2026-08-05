@@ -11,6 +11,8 @@ SIMILARITY_THRESHOLD_NORMALIZE = 95
 
 SIMILARITY_THRESHOLD_MERGE = 95
 
+MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+
 CATEGORY_MAP = {
     # Laboratory plasticware
     "plastiki lab.": "laboratory plasticware",

@@ -15,6 +15,7 @@ from app.normalize import (
 
 from app.parser import parse_snapshot
 from app.merge import merge_catalog_and_snapshot
+from app.embeddings import build_embeddings
 
 logging.basicConfig(
     level=logging.INFO,
@@ -72,6 +73,16 @@ def main():
     logging.info(
         f"Merge: Snapshot only: "
         f"{len(merge_result['snapshot_only'])}"
+    )
+
+    # Build embeddings
+    semantic_index = build_embeddings(
+        merge_result["catalog"]
+    )
+
+    logging.info(
+        f"Embeddings: Indexed "
+        f"{len(semantic_index['products'])} products."
     )
 
 
