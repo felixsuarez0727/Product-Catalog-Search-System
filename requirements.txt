@@ -3,3 +3,6 @@
 # Dependencies: 
 rapidfuzz==3.0.0
 beautifulsoup4==4.12.3
+numpy==1.26.4
+scikit-learn==1.5.1
+sentence-transformers==3.0.1
