@@ -364,7 +364,7 @@ pytest -v
 To reproduce the empirical validation of the SKU and name similarity thresholds on the complete catalog, run:
 
 ```bash
-python validate_thresholds.py data/katalog_probka.csv
+python validate_threshold.py data/katalog_probka.csv
 ```
 
 This utility analyzes the catalog and reports how the selected similarity thresholds behave across all product pairs, providing additional evidence that the chosen values correctly distinguish true duplicate/typo cases from unrelated products with similar catalog numbers.
