@@ -7,9 +7,9 @@ OUTPUT_FILE = "data/standardized_catalog.csv"
 
 SNAPSHOT_FILE = "data/producent_novagen_snapshot.html"
 
-SIMILARITY_THRESHOLD_NORMALIZE = 95
+SIMILARITY_THRESHOLD_NORMALIZE = 85
 
-SIMILARITY_THRESHOLD_MERGE = 95
+SIMILARITY_THRESHOLD_MERGE = 85
 
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
