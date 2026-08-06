@@ -35,10 +35,13 @@ Catalog CSV
 Normalize fields
      │
      ▼
-Detect duplicate SKUs
+Detect duplicate / near-duplicate SKUs
      │
      ▼
-Merge duplicates
+Validate product name similarity
+     │
+     ▼
+Merge confirmed duplicates
      │
      ▼
 Write normalized catalog
@@ -147,11 +150,9 @@ Match          │
 
 ## Prerequisites
 
-Before running the project, make sure you have the following installed:
-
-- Python **3.12** 
-  - You can try versions of **Python 3.8 and later**, but if you encounter any runtime issues, I recommend using **3.12**.
-- Git
+- **Python 3.9–3.13**
+     > **Note:** The project has been tested with Python 3.12. At the time of development, some dependencies (e.g. scikit-learn) were not yet compatible with Python 3.14.
+- **Git**
 ---
 
 ## Installation
@@ -347,14 +348,36 @@ Each search result includes:
 
 ---
 
+## Running Tests
+
+The project includes a test suite covering the main scenarios described in the assignment, including catalog normalization, duplicate and near-duplicate detection, HTML parsing, data merging, typo handling, hybrid search, and relevance scoring.
+
+Install `pytest` and run the complete test suite:
+
+```bash
+pip install pytest
+pytest -v
+```
+
+### Optional: Validate Similarity Thresholds
+
+To reproduce the empirical validation of the SKU and name similarity thresholds on the complete catalog, run:
+
+```bash
+python validate_thresholds.py data/katalog_probka.csv
+```
+
+This utility analyzes the catalog and reports how the selected similarity thresholds behave across all product pairs, providing additional evidence that the chosen values correctly distinguish true duplicate/typo cases from unrelated products with similar catalog numbers.
+
+---
+
 ## Notes
 
 - **Product categories were normalized to a consistent English vocabulary** to improve filtering and semantic search.
+
 - **Product names were intentionally preserved in their original language (Polish)** to avoid modifying the source data. The search index therefore operates on the original product names together with the normalized categories, manufacturer information, and any additional product details.
 
-- The assignment mentions `FAISS` as one possible vector search backend. During development, the implementation was migrated to `scikit-learn's cosine similarity search` due to compatibility issues between the available FAISS build and Python 3.12/NumPy.
-
-- Given the small dataset an exact cosine similarity search provides equivalent functionality while simplifying installation and improving portability. The embedding generation remains unchanged and uses the `sentence-transformers/all-MiniLM-L6-v2` model.
+- The assignment suggests `FAISS` as a possible vector search backend. For this implementation, `scikit-learn` was chosen due to compatibility considerations and because the dataset is relatively small, where brute-force cosine similarity is sufficiently efficient. If the catalog were to grow significantly or support a high volume of concurrent similarity queries, a dedicated vector index such as `FAISS` would be the preferred solution.
 
 ---
 
