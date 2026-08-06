@@ -8,12 +8,15 @@ from rapidfuzz import fuzz
 # -----------------------------------------------------------------------------
 # Helpers
 # -----------------------------------------------------------------------------
+
+
 def choose_best(values):
     """Return the most informative non-empty value."""
     values = [v for v in values if v not in ("", None)]
     if not values:
         return None
     return max(values, key=len)
+
 
 def normalize_price(value):
     """Normalize different price formats into float."""
@@ -123,6 +126,7 @@ def read_catalog(path):
     with open(path, encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
+
 def write_catalog(path, rows):
     fieldnames = [
         "nr_katalogowy",
@@ -164,6 +168,8 @@ def normalize_catalog(rows):
 # -----------------------------------------------------------------------------
 # Deduplication
 # -----------------------------------------------------------------------------
+NAME_SIMILARITY_THRESHOLD = 70  # tune empirically
+
 def group_similar_skus(rows):
     grouped = defaultdict(list)
     for row in rows:
@@ -176,15 +182,30 @@ def group_similar_skus(rows):
         for existing in grouped:
             score = fuzz.ratio(existing, sku)
             if score >= SIMILARITY_THRESHOLD_NORMALIZE:
-                logging.info(
-                    f"Normalize: Fuzzy SKU match: '{sku}' -> '{existing}' ({score:.1f})"
-                )
-                grouped[existing].append(row)
-                found = True
-                break
+                # SKU similarity alone can't tell a typo of the same
+                # product apart from a different product with a
+                # coincidentally similar SKU (e.g. NO-10009 vs NO-10091).
+                existing_name = grouped[existing][0]["nazwa"] or ""
+                name_score = fuzz.token_sort_ratio(
+                    existing_name, row["nazwa"] or "")
+                if name_score >= NAME_SIMILARITY_THRESHOLD:
+                    logging.info(
+                        f"Normalize: Fuzzy SKU match: '{sku}' -> '{existing}' "
+                        f"(sku={score:.1f}, name={name_score:.1f})"
+                    )
+                    grouped[existing].append(row)
+                    found = True
+                    break
+                else:
+                    logging.info(
+                        f"Normalize: SKU '{sku}' similar to '{existing}' "
+                        f"(sku={score:.1f}) but names diverge "
+                        f"(name={name_score:.1f}) — not merging"
+                    )
         if not found:
             grouped[sku].append(row)
     return grouped
+
 
 def deduplicate_catalog(rows):
     grouped = group_similar_skus(rows)
