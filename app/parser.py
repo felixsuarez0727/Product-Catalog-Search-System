@@ -1,3 +1,4 @@
+import re
 from bs4 import BeautifulSoup
 
 def parse_snapshot(path: str) -> list[dict]:
@@ -15,15 +16,14 @@ def parse_snapshot(path: str) -> list[dict]:
             for li in card.select("ul.specs li")
         ]
 
-        description = card.select_one(".product-desc")
+        description_el = card.select_one(".product-desc")
+        description = re.sub(r"\s+", " ", description_el.get_text()).strip() if description_el else None
 
         products.append(
             {
                 "sku": card.get("data-sku", "").strip().upper(),
                 "manufacturer_name": card.select_one(".product-name").get_text(strip=True),
-                "description": description.get_text(" ", strip=True)
-                if description
-                else None,
+                "description": description,
                 "specifications": specs,
             }
         )
